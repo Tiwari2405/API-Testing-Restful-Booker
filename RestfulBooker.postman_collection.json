@@ -1,0 +1,930 @@
+{
+	"info": {
+		"_postman_id": "8537ad07-db66-48db-ae7f-31f22d33dcb1",
+		"name": "RestfulBooker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32453615",
+		"_collection_link": "https://www.postman.com/tiwari2405/workspace/personal-live-projects/collection/32453615-8537ad07-db66-48db-ae7f-31f22d33dcb1?action=share&source=collection_link&creator=32453615"
+	},
+	"item": [
+		{
+			"name": "Positive Testing",
+			"item": [
+				{
+					"name": "Generate Token",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"admin\",\r\n    \"password\" : \"password123\"\r\n}"
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/auth",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.globals.set(\"g_id\", \"jsonData.bookingid\");\r",
+									"\r",
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify the first name\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Jim\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify that header have Content type\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify that Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Verify that Status code name has string\", function () {\r",
+									"    pm.response.to.have.status(\"Created\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Verify that Data type of the response is valid\", () =>{\r",
+									"    var jData = pm.response.json();\r",
+									"    pm.expect(jData).to.be.an(\"object\");\r",
+									"    pm.expect(jData.booking.firstname).to.be.a(\"string\");\r",
+									"    pm.expect(jData.booking.lastname).to.be.a(\"string\");\r",
+									"    pm.expect(jData.booking.totalprice).to.be.a(\"number\");\r",
+									"    pm.expect(jData.booking.depositpaid).to.be.a(\"boolean\");\r",
+									"    pm.expect(jData.booking.additionalneeds).to.be.a(\"string\");\r",
+									"    pm.expect(jData.booking.bookingdates.checkin).to.be.a(\"string\");\r",
+									"    pm.expect(jData.booking.bookingdates.checkout).to.be.a(\"string\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verifying field is equal to JSON ield\", () =>{\r",
+									"    var data = pm.response.json();\r",
+									"    pm.expect(data.booking.firstname).to.eql(\"Jim\");\r",
+									"    pm.expect(data.booking.lastname).to.eql(\"Brown\");\r",
+									"    pm.expect(data.booking.totalprice).to.eql(111);\r",
+									"    pm.expect(data.booking.depositpaid).to.eql(true);\r",
+									"    pm.expect(data.booking.additionalneeds).to.eql(\"Breakfast\");\r",
+									"});\r",
+									"\r",
+									"var schema = {\r",
+									"    \"items\": {\r",
+									"        \"type\": \"boolean\"\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"var jsonData = {\r",
+									"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"firstname\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"lastname\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"totalprice\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"depositpaid\": {\r",
+									"      \"type\": \"boolean\"\r",
+									"    },\r",
+									"    \"bookingdates\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"checkin\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"checkout\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"checkin\",\r",
+									"        \"checkout\"\r",
+									"      ]\r",
+									"    },\r",
+									"    \"additionalneeds\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"firstname\",\r",
+									"    \"lastname\",\r",
+									"    \"totalprice\",\r",
+									"    \"depositpaid\",\r",
+									"    \"bookingdates\",\r",
+									"    \"additionalneeds\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"pm.test('Verify that Schema is valid', function () {\r",
+									"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"Jim\",\r\n    \"lastname\" : \"Brown\",\r\n    \"totalprice\" : 111,\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2018-01-01\",\r\n        \"checkout\" : \"2019-01-01\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}"
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Verify that Status code is 200', function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify the first name', function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Jim');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that header have Content type', function () {\r",
+									"    pm.response.to.have.header('Content-Type');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Response time is less than 1000ms', function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Status code name has string', function () {\r",
+									"    pm.response.to.have.status('OK');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Data type of the response is valid', () => {\r",
+									"    var jData = pm.response.json();\r",
+									"    pm.expect(jData).to.be.an('object');\r",
+									"    pm.expect(jData.firstname).to.be.a('string');\r",
+									"    pm.expect(jData.lastname).to.be.a('string');\r",
+									"    pm.expect(jData.totalprice).to.be.a('number');\r",
+									"    pm.expect(jData.depositpaid).to.be.a('boolean');\r",
+									"    pm.expect(jData.additionalneeds).to.be.a('string');\r",
+									"    pm.expect(jData.bookingdates.checkin).to.be.a('string');\r",
+									"    pm.expect(jData.bookingdates.checkout).to.be.a('string');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verifying field is equal to JSON field', () => {\r",
+									"    var data = pm.response.json();\r",
+									"    pm.expect(data.firstname).to.eql('Jim');\r",
+									"    pm.expect(data.lastname).to.eql('Brown');\r",
+									"    pm.expect(data.totalprice).to.eql(111);\r",
+									"    pm.expect(data.depositpaid).to.eql(true);\r",
+									"    pm.expect(data.additionalneeds).to.eql('Breakfast');\r",
+									"})\r",
+									"\r",
+									"var schema = { 'items': { 'type': 'boolean' } };\r",
+									"\r",
+									"var jsonData = {\r",
+									"    '$schema': 'http://json-schema.org/draft-04/schema#',\r",
+									"    'type': 'object',\r",
+									"    'properties': {\r",
+									"        'firstname': { 'type': 'string' },\r",
+									"        'lastname': { 'type': 'string' },\r",
+									"        'totalprice': { 'type': 'integer' },\r",
+									"        'depositpaid': { 'type': 'boolean' },\r",
+									"        'bookingdates': {\r",
+									"            'type': 'object',\r",
+									"            'properties': {\r",
+									"                'checkin': { 'type': 'string' },\r",
+									"                'checkout': { 'type': 'string' }\r",
+									"            },\r",
+									"            'required': [\r",
+									"                'checkin',\r",
+									"                'checkout'\r",
+									"            ]\r",
+									"        },\r",
+									"        'additionalneeds': { 'type': 'string' }\r",
+									"    },\r",
+									"    'required': [\r",
+									"        'firstname',\r",
+									"        'lastname',\r",
+									"        'totalprice',\r",
+									"        'depositpaid',\r",
+									"        'bookingdates',\r",
+									"        'additionalneeds'\r",
+									"    ]\r",
+									"};\r",
+									"\r",
+									"pm.test('Verify that Schema is valid', function () {\r",
+									"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/{{g_id}}",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"{{g_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Booking ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Verify that Status code is 200', function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that header have Content type', function () {\r",
+									"    pm.response.to.have.header('Content-Type');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Response time is less than 1000ms', function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Status code name has string', function () {\r",
+									"    pm.response.to.have.status('OK');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that booking id is showing', function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"bookingid\");\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Verify that Status code is 200', function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify the first name after Updation', function () {\r",
+									"    pm.expect(pm.response.text()).to.include('James');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that header have Content type', function () {\r",
+									"    pm.response.to.have.header('Content-Type');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Response time is less than 1000ms', function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Status code name has string', function () {\r",
+									"    pm.response.to.have.status('OK');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Data type of the response is valid', () => {\r",
+									"    var jData = pm.response.json();\r",
+									"    pm.expect(jData).to.be.an('object');\r",
+									"    pm.expect(jData.firstname).to.be.a('string');\r",
+									"    pm.expect(jData.lastname).to.be.a('string');\r",
+									"    pm.expect(jData.totalprice).to.be.a('number');\r",
+									"    pm.expect(jData.depositpaid).to.be.a('boolean');\r",
+									"    pm.expect(jData.additionalneeds).to.be.a('string');\r",
+									"    pm.expect(jData.bookingdates.checkin).to.be.a('string');\r",
+									"    pm.expect(jData.bookingdates.checkout).to.be.a('string');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verifying field is equal to JSON field', () => {\r",
+									"    var data = pm.response.json();\r",
+									"    pm.expect(data.firstname).to.eql('James');\r",
+									"    pm.expect(data.lastname).to.eql('Brown');\r",
+									"    pm.expect(data.totalprice).to.eql(111);\r",
+									"    pm.expect(data.depositpaid).to.eql(true);\r",
+									"    pm.expect(data.additionalneeds).to.eql('Breakfast');\r",
+									"})\r",
+									"\r",
+									"var schema = { 'items': { 'type': 'boolean' } };\r",
+									"\r",
+									"var jsonData = {\r",
+									"    '$schema': 'http://json-schema.org/draft-04/schema#',\r",
+									"    'type': 'object',\r",
+									"    'properties': {\r",
+									"        'firstname': { 'type': 'string' },\r",
+									"        'lastname': { 'type': 'string' },\r",
+									"        'totalprice': { 'type': 'integer' },\r",
+									"        'depositpaid': { 'type': 'boolean' },\r",
+									"        'bookingdates': {\r",
+									"            'type': 'object',\r",
+									"            'properties': {\r",
+									"                'checkin': { 'type': 'string' },\r",
+									"                'checkout': { 'type': 'string' }\r",
+									"            },\r",
+									"            'required': [\r",
+									"                'checkin',\r",
+									"                'checkout'\r",
+									"            ]\r",
+									"        },\r",
+									"        'additionalneeds': { 'type': 'string' }\r",
+									"    },\r",
+									"    'required': [\r",
+									"        'firstname',\r",
+									"        'lastname',\r",
+									"        'totalprice',\r",
+									"        'depositpaid',\r",
+									"        'bookingdates',\r",
+									"        'additionalneeds'\r",
+									"    ]\r",
+									"};\r",
+									"\r",
+									"pm.test('Verify that Schema is valid', function () {\r",
+									"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=17236b9b2dda8bc"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"James\",\r\n    \"lastname\" : \"Brown\",\r\n    \"totalprice\" : 111,\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2018-01-01\",\r\n        \"checkout\" : \"2019-01-01\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}"
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/{{g_id}}",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"{{g_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Booking Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Verify that Status code is 200', function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify the first name after Updation', function () {\r",
+									"    pm.expect(pm.response.text()).to.include('James');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that header have Content type', function () {\r",
+									"    pm.response.to.have.header('Content-Type');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Response time is less than 1000ms', function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Status code name has string', function () {\r",
+									"    pm.response.to.have.status('OK');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Data type of the response is valid', () => {\r",
+									"    var jData = pm.response.json();\r",
+									"    pm.expect(jData).to.be.an('object');\r",
+									"    pm.expect(jData.firstname).to.be.a('string');\r",
+									"    pm.expect(jData.lastname).to.be.a('string');\r",
+									"    pm.expect(jData.totalprice).to.be.a('number');\r",
+									"    pm.expect(jData.depositpaid).to.be.a('boolean');\r",
+									"    pm.expect(jData.additionalneeds).to.be.a('string');\r",
+									"    pm.expect(jData.bookingdates.checkin).to.be.a('string');\r",
+									"    pm.expect(jData.bookingdates.checkout).to.be.a('string');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verifying field is equal to JSON field', () => {\r",
+									"    var data = pm.response.json();\r",
+									"    pm.expect(data.firstname).to.eql('James');\r",
+									"    pm.expect(data.lastname).to.eql('Brown');\r",
+									"    pm.expect(data.totalprice).to.eql(111);\r",
+									"    pm.expect(data.depositpaid).to.eql(true);\r",
+									"    pm.expect(data.additionalneeds).to.eql('Breakfast');\r",
+									"})\r",
+									"\r",
+									"var schema = { 'items': { 'type': 'boolean' } };\r",
+									"\r",
+									"var jsonData = {\r",
+									"    '$schema': 'http://json-schema.org/draft-04/schema#',\r",
+									"    'type': 'object',\r",
+									"    'properties': {\r",
+									"        'firstname': { 'type': 'string' },\r",
+									"        'lastname': { 'type': 'string' },\r",
+									"        'totalprice': { 'type': 'integer' },\r",
+									"        'depositpaid': { 'type': 'boolean' },\r",
+									"        'bookingdates': {\r",
+									"            'type': 'object',\r",
+									"            'properties': {\r",
+									"                'checkin': { 'type': 'string' },\r",
+									"                'checkout': { 'type': 'string' }\r",
+									"            },\r",
+									"            'required': [\r",
+									"                'checkin',\r",
+									"                'checkout'\r",
+									"            ]\r",
+									"        },\r",
+									"        'additionalneeds': { 'type': 'string' }\r",
+									"    },\r",
+									"    'required': [\r",
+									"        'firstname',\r",
+									"        'lastname',\r",
+									"        'totalprice',\r",
+									"        'depositpaid',\r",
+									"        'bookingdates',\r",
+									"        'additionalneeds'\r",
+									"    ]\r",
+									"};\r",
+									"\r",
+									"pm.test('Verify that Schema is valid', function () {\r",
+									"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=17236b9b2dda8bc"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"James\",\r\n    \"lastname\" : \"Brown\"\r\n}"
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/924",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"924"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Verify that Status code is 201', function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that header have Content type', function () {\r",
+									"    pm.response.to.have.header('Content-Type');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Response time is less than 1000ms', function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Status code name has string', function () {\r",
+									"    pm.response.to.have.status('Created');\r",
+									"})\r",
+									"\r",
+									"\r",
+									"var schema = { 'items': { 'type': 'boolean' } };\r",
+									"\r",
+									"var jsonData = {\r",
+									"    '$schema': 'http://json-schema.org/draft-04/schema#',\r",
+									"    'type': 'object',\r",
+									"    'properties': {\r",
+									"        'firstname': { 'type': 'string' },\r",
+									"        'lastname': { 'type': 'string' },\r",
+									"        'totalprice': { 'type': 'integer' },\r",
+									"        'depositpaid': { 'type': 'boolean' },\r",
+									"        'bookingdates': {\r",
+									"            'type': 'object',\r",
+									"            'properties': {\r",
+									"                'checkin': { 'type': 'string' },\r",
+									"                'checkout': { 'type': 'string' }\r",
+									"            },\r",
+									"            'required': [\r",
+									"                'checkin',\r",
+									"                'checkout'\r",
+									"            ]\r",
+									"        },\r",
+									"        'additionalneeds': { 'type': 'string' }\r",
+									"    },\r",
+									"    'required': [\r",
+									"        'firstname',\r",
+									"        'lastname',\r",
+									"        'totalprice',\r",
+									"        'depositpaid',\r",
+									"        'bookingdates',\r",
+									"        'additionalneeds'\r",
+									"    ]\r",
+									"};\r",
+									"\r",
+									"pm.test('Verify that Schema is valid', function () {\r",
+									"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=17236b9b2dda8bc"
+							}
+						],
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/4209",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"4209"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Testing",
+			"item": [
+				{
+					"name": "Create New Booking With Invalid Character",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify that Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify that header have Content type\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify that Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify that Status code name has string\", function () {\r",
+									"    pm.response.to.have.status(\"Bad Request\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"Jim\",\r\n    \"lastname\" : \"Brown\",\r\n    \"totalprice\" : 111@,\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2018-01-01\",\r\n        \"checkout\" : \"2019-01-01\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}"
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Booking With Invalid ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Verify that Status code is 404', function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that header have Content type', function () {\r",
+									"    pm.response.to.have.header('Content-Type');\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Response time is less than 1000ms', function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"})\r",
+									"\r",
+									"pm.test('Verify that Status code name has string', function () {\r",
+									"    pm.response.to.have.status('Not Found');\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/123d",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"123d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Booking Update With Invalid First Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify that Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify that header have Content type\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify that Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify that Status code name has string\", function () {\r",
+									"    pm.response.to.have.status(\"Bad Request\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=17236b9b2dda8bc"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"#j5\",\r\n    \"lastname\" : \"Brown\"\r\n}"
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/2363",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"2363"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
